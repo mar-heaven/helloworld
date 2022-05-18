@@ -1,12 +1,17 @@
 FROM centos/python-38-centos7
 USER root
-
 WORKDIR /tmp
-COPY . /tmp
 
-RUN pip3 install install -e .
+COPY requirements.txt /tmp/requirements.txt
 
-RUN pip3 install -i https://pypi.douban.com/simple -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt \
+&&  rm -f /tmp/requirements.txt
+
+COPY ./dist/* /tmp/build/
+
+RUN pip install \
+    /tmp/build/*  \
+&&  rm -rf /tmp/build
 
 EXPOSE 5000
 
